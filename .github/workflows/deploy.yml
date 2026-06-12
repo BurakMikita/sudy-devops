@@ -26,12 +26,7 @@ jobs:
              git clone https://github.com/it-incubator/devops-backend ~/backend
            fi
            mkdir -p ~/myapp2
-           cat > ~/myapp2/docker-compose.yml << 'EOF'
-           services:
-             back:
-               build: /root/backend
-               ports: ["3001:3000"]
-           EOF
+           printf 'services:\n  back:\n    build: %s\n    ports: ["3001:3000"]\n' "$HOME/backend" > ~/myapp2/docker-compose.yml
            cd ~/myapp2
            docker compose up -d --build
 
