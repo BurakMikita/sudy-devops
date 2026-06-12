@@ -22,8 +22,7 @@ jobs:
          script: |
            cd /var/www/myapp/backend
            git pull origin main
-           cd /var/www/my-app
-           docker-compose up -d --build backend
+           docker compose up -d --build
 
 
       
