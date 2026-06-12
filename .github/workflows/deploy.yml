@@ -20,16 +20,10 @@ jobs:
          key: ${{ secrets.SSH_PRIVATE_KEY }}
          passphrase: ${{ secrets.SSH_PASSPHRASE }}
          script: |
-           if [ -d ~/backend ]; then
-             cd ~/backend && git pull origin main
+           if [ -d ~/sudy-devops ]; then
+             cd ~/sudy-devops && git pull origin main
            else
-             git clone https://github.com/it-incubator/devops-backend ~/backend
+             git clone https://github.com/BurakMikita/sudy-devops ~/sudy-devops
            fi
-           mkdir -p ~/myapp2
-           printf 'services:\n  back:\n    build: %s\n    ports: ["3001:3000"]\n' "$HOME/backend" > ~/myapp2/docker-compose.yml
-           cd ~/myapp2
+           cd ~/sudy-devops
            docker compose up -d --build
-
-
-      
-      
