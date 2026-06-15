@@ -27,9 +27,12 @@ jobs:
            fi
            cd ~/sudy-devops
            docker compose up -d --build
-
+  notify:
+    needs: [check, deploy]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
       - name: Notify Telegram
-        if: always()
         run: |
           STATUS="${{ job.status }}"
           if [ "$STATUS" = "success" ]; then

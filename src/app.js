@@ -5,7 +5,7 @@ app.use(express.json());
 
 const users = [
   { id: 1, name: 'Alice', email: 'alice@example.com' },
-  { id: 2, name: 'Bob', email: 'bob@example.com' },
+  
 ];
 
 app.get('/health', (req, res) => {
@@ -23,13 +23,7 @@ app.get('/users/:id', (req, res) => {
 });
 
 app.post('/users', (req, res) => {
-  const { name, email } = req.body;
-  if (!name || !email) {
-    return res.status(400).json({ error: 'Name and email are required' });
-  }
-  const newUser = { id: users.length + 1, name, email };
-  users.push(newUser);
-  res.status(201).json(newUser);
+
 });
 
 app.delete('/users/:id', (req, res) => {
