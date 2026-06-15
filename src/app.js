@@ -9,7 +9,7 @@ const users = [
 ];
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+  res.status(500).json({ status: 'error' });
 });
 
 app.get('/users', (req, res) => {
