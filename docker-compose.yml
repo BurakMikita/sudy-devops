@@ -1,4 +1,4 @@
 services:
   back:
-    build: .
+    image: ${DOCKER_IMAGE}
     ports: ["3001:3000"]

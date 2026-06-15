@@ -48,7 +48,7 @@ jobs:
              sed -i "s|DOCKER_IMAGE=.*|DOCKER_IMAGE=${{ needs.build.outputs.image_sha }}|" .env
  
               # Перезапускаем только backend, не трогая frontend и db
-              docker compose up -d --no-deps backend
+              docker compose up -d --no-deps back
 
   notify:
     needs: [check, build, deploy]
