@@ -5,11 +5,13 @@ app.use(express.json());
 
 const users = [
   { id: 1, name: 'Alice', email: 'alice@example.com' },
-  
+  { id: 2, name: 'Bob', email: 'bob@example.com' },
 ];
 
+let nextId = 3;
+
 app.get('/health', (req, res) => {
-  res.status(500).json({ status: 'error' });
+  res.json({ status: 'ok' });
 });
 
 app.get('/users', (req, res) => {
@@ -23,7 +25,12 @@ app.get('/users/:id', (req, res) => {
 });
 
 app.post('/users', (req, res) => {
-
+  const { name, email } = req.body;
+  if (!name) return res.status(400).json({ error: 'Name is required' });
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+  const user = { id: nextId++, name, email };
+  users.push(user);
+  res.status(201).json(user);
 });
 
 app.delete('/users/:id', (req, res) => {
