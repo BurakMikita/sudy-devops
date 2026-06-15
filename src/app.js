@@ -5,7 +5,7 @@ app.use(express.json());
 
 const users = [
   { id: 1, name: 'Alice', email: 'alice@example.com' },
-  { id: 2, name: 'Bob', email: 'bob@example.com' },
+  
 ];
 
 app.get('/health', (req, res) => {
