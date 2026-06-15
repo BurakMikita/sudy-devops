@@ -1,0 +1,32 @@
+name: Notify Telegram
+
+on:
+  workflow_call:
+    inputs:
+      check_result:
+        required: true
+        type: string
+      deploy_result:
+        required: true
+        type: string
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Telegram
+        run: |
+          CHECKS="${{ inputs.check_result }}"
+          DEPLOY="${{ inputs.deploy_result }}"
+
+          if [ "$CHECKS" != "success" ]; then
+            TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          elif [ "$DEPLOY" != "success" ]; then
+            TEXT="❌ Деплой упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          else
+            TEXT="✅ Деплой успешен%0A${{ github.repository }} @ ${{ github.ref_name }}"
+          fi
+
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d "text=$TEXT"

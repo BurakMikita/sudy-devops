@@ -7,8 +7,27 @@ on:
 jobs:
   check:
     uses: ./.github/workflows/pr-check.yml
+  
+  build:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+      - uses: docker/checkout@v4
 
-  deploy:
+      - name: Enter in Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+
+      - name: Build and push image to Docker Hub
+        env:
+          IMAGE_SHA: ${{ secrets.DOCKER_USER }}/backend:sha-${{ github.sha }}
+          IMAGE_LATEST: ${{ secrets.DOCKER_USER }}/backend:latest
+        run: |
+          docker build -t $IMAGE_SHA -t $IMAGE_LATEST .
+          docker push $IMAGE_SHA
+          docker push $IMAGE_LATEST
+          echo "image_sha=$IMAGE_SHA" >> $GITHUB_OUTPUT
+         
     needs: check
     runs-on: ubuntu-latest
     steps:
@@ -29,23 +48,10 @@ jobs:
            docker compose up -d --build
   notify:
     needs: [check, deploy]
-    runs-on: ubuntu-latest
     if: always()
-    steps:
-      - name: Notify Telegram
-        run: |
-          CHECKS="${{ needs.check.result }}"
-          DEPLOY="${{ needs.deploy.result }}"
- 
-          if [ "$CHECKS" != "success" ]; then
-            TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          elif [ "$DEPLOY" != "success" ]; then
-            TEXT="❌ Деплой упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          else
-            TEXT="✅ Деплой успешен%0A${{ github.repository }} @ ${{ github.ref_name }}"
-          fi
- 
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-            -d "text=$TEXT"
+    uses: ./.github/workflows/notify.yml
+    with:
+      check_result: ${{ needs.check.result }}
+      deploy_result: ${{ needs.deploy.result }}
+    secrets: inherit
 
