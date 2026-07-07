@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend-api
+  template:
+    metadata:
+      labels:
+        app: backend-api
+    spec:
+      imagePullSecrets:
+        - name: dockerhub-cred
+      containers:
+        - name: backend-api
+          image: nikitaburak/backend:sha-007d1d08c066e6e0314d633137d5560685559bc2
+
+
+          ports:
+            - containerPort: 3000
+          envFrom:
+             - configMapRef:
+                 name: backend-config
+             - secretRef:
+                 name: backend-secret
+            

@@ -26,3 +26,9 @@ Thumbs.db
 
 # Test coverage
 coverage/
+
+# Kubernetes secrets
+deployment/secret.yaml
+
+# Kubernetes configmaps
+deployment/dockerhub-secret.yaml
