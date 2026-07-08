@@ -16,7 +16,7 @@ spec:
         - name: dockerhub-cred
       containers:
         - name: backend-api
-          image: nikitaburak/backend:sha-0f4a51c4eb81ee59ff909ca6846747448d213254
+          image: ${IMAGE}
           ports:
             - containerPort: 3000
           envFrom:
