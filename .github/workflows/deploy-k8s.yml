@@ -28,7 +28,7 @@ jobs:
           kubectl rollout status deployment/backend-api --timeout=120s
  
   notify:
-    name: Notify JOB
+    name: Notify JOBs
     needs: [checks, deploy, build]
     if: always()
     uses: ./.github/workflows/notify.yml
