@@ -32,3 +32,7 @@ deployment/secret.yaml
 
 # Kubernetes configmaps
 deployment/dockerhub-secret.yaml
+
+# Kubernetes secrets (manifests)
+manifests/secret.yaml
+manifests/dockerhub-secret.yaml

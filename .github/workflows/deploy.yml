@@ -1,8 +1,7 @@
 name: DEPLOY
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   check:
@@ -10,26 +9,8 @@ jobs:
 
   build:
     needs: check
-    runs-on: ubuntu-latest
-    outputs:
-      image_sha: ${{ steps.build-push.outputs.image_sha }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Login to Docker Hub
-        run: docker login -u ${{ vars.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
-
-      - name: Build and push image to Docker Hub
-        id: build-push
-        env:
-          IMAGE_SHA: ${{ vars.DOCKER_USER }}/backend:sha-${{ github.sha }}
-          IMAGE_LATEST: ${{ vars.DOCKER_USER }}/backend:latest
-        run: |
-          docker build -t $IMAGE_SHA -t $IMAGE_LATEST .
-          docker push $IMAGE_SHA
-          docker push $IMAGE_LATEST
-          echo "image_sha=$IMAGE_SHA" >> $GITHUB_OUTPUT
+    uses: ./.github/workflows/build-push.yml
+    secrets: inherit
 
   deploy:
     needs: build

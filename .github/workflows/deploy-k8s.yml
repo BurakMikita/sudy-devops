@@ -1,0 +1,38 @@
+name: Deploy k8s
+ 
+on:
+  push:
+    branches: [main]
+ 
+jobs:
+  checks:
+    uses: ./.github/workflows/pr-check.yml
+ 
+  build:
+    needs: [checks]
+    uses: ./.github/workflows/build-push.yml
+    secrets: inherit
+ 
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+ 
+      - name: Deploy to k3s
+        run: |
+          kubectl set image deployment/backend-api backend-api=${{ needs.build.outputs.image_sha }}
+          kubectl rollout status deployment/backend-api --timeout=120s
+ 
+  notify:
+    name: Notify JOB
+    needs: [checks, deploy, build]
+    if: always()
+    uses: ./.github/workflows/notify.yml
+    with:
+      check_result: ${{ needs.checks.result }}
+      deploy_result: ${{ needs.deploy.result }}
+    secrets: inherit
