@@ -32,6 +32,29 @@ spec:
                 name: backend-config
             - secretRef:
                 name: backend-secret
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            timeoutSeconds: 3  
+            failureThreshold: 12    # 12 × 5 сек = 1 минута на старт
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            timeoutSeconds: 3  
+            initialDelaySeconds: 0
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            timeoutSeconds: 3  
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            failureThreshold: 3
 
 
 ---

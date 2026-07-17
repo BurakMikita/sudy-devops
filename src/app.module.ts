@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { MetricsModule } from './metrics.module';
 import { ConfigModule } from '@nestjs/config';
 import { MetricsMiddleware } from './metrics.middleware';
+import { HealthModule } from './health.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { MetricsMiddleware } from './metrics.middleware';
       isGlobal: true,
     }),
     MetricsModule,
+    HealthModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
