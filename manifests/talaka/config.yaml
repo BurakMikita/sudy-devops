@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: talaka-config
+data:
+  DB_HOST: "talaka-postgres"
+  DB_PORT: "5432"
+  DB_NAME: "appdb"
+  REDIS_URL: "talaka-redis:6379"
+
+  JWT_ACCESS_TTL_MINUTES: "1"
+  JWT_REFRESH_TTL_HOURS: "24"
+
+  SERVER_PORT: "8080"
+  SERVER_HOST: "0.0.0.0"
+
+  SWAGGER_HOST: "talaka.it"
+  CORS_ORIGINS: "https://talaka.it"
+
+  INSTAGRAM_USER_ID: "17841456414787330"
+  GOOGLE_CALENDAR_ID: "c_c0480aef6272a28cbee65af51d63ea69acc34f6636318d3b194642e1d65d74c7@group.calendar.google.com"
+  GOOGLE_CALENDAR_KEY_FILE: "my-calendar-app.json"
+
+  VITE_BACKEND_URL: "https://talaka.it/api/v1"

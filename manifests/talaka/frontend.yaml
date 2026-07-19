@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: talaka-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: talaka-frontend
+  template:
+    metadata:
+      labels:
+        app: talaka-frontend
+    spec:
+      containers:
+        - name: talaka-frontend
+          image: ${FRONTEND_IMAGE}
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: talaka-frontend-service
+spec:
+  selector:
+    app: talaka-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP

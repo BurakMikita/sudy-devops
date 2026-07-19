@@ -36,3 +36,4 @@ deployment/dockerhub-secret.yaml
 # Kubernetes secrets (manifests)
 manifests/secret.yaml
 manifests/dockerhub-secret.yaml
+manifests/talaka/secret.yaml

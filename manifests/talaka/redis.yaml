@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: talaka-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: talaka-redis
+  template:
+    metadata:
+      labels:
+        app: talaka-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          command: ["redis-server", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
+          ports:
+            - containerPort: 6379
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: talaka-redis
+spec:
+  selector:
+    app: talaka-redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+  type: ClusterIP
