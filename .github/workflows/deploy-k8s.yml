@@ -28,7 +28,10 @@ jobs:
         env:
           IMAGE: ${{ needs.build.outputs.image_sha }}
         run: |
-          envsubst < manifests/backend.yaml | kubectl apply -f -
+          helm upgrade --install backend-api ./helm/backend-api \
+            --set image.repository="${IMAGE%:*}" \
+            --set image.tag="${IMAGE##*:}" \
+            --set secret.databaseUrl="${{ secrets.DATABASE_URL }}"
           kubectl annotate deployment/backend-api kubernetes.io/change-cause="${{ github.sha }}" --overwrite
           kubectl rollout status deployment/backend-api --timeout=120s
  
