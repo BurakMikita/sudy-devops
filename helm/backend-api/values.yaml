@@ -28,3 +28,6 @@ hpa:
   maxReplicas: 5
   cpuUtilization: 70
   memoryUtilization: 80
+
+monitoring:
+  prometheusRelease: kube-prometheus-stack

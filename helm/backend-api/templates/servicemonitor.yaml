@@ -2,9 +2,8 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: backend-api-monitor
-  namespace: default
   labels:
-    release: kube-prometheus-stack   # ← должен совпадать с именем release Helm
+    release: {{ .Values.monitoring.prometheusRelease }}   # ← должен совпадать с именем release Helm
 spec:
   selector:
     matchLabels:

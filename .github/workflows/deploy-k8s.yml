@@ -20,20 +20,26 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Configure kubectl
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         run: |
           mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
- 
-      - name: Deploy to k3s
+          echo "$KUBE_CONFIG" | base64 -d > ~/.kube/config
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Deploy with Helm
         env:
           IMAGE: ${{ needs.build.outputs.image_sha }}
         run: |
           helm upgrade --install backend-api ./helm/backend-api \
+            --reuse-values \
             --set image.repository="${IMAGE%:*}" \
             --set image.tag="${IMAGE##*:}" \
-            --set secret.databaseUrl="${{ secrets.DATABASE_URL }}"
+            --wait \
+            --timeout 4m
           kubectl annotate deployment/backend-api kubernetes.io/change-cause="${{ github.sha }}" --overwrite
-          kubectl rollout status deployment/backend-api --timeout=120s
  
   notify:
     name: Notify JOBs
