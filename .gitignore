@@ -39,3 +39,6 @@ manifests/dockerhub-secret.yaml
 
 # Kubernetes secrets (talaka)
 talaka/secret.yaml
+
+# age encryption private key
+age-key.txt
