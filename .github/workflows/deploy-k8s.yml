@@ -17,7 +17,7 @@ jobs:
     needs: [build]
     uses: ./.github/workflows/deploy-argocd.yml
     with:
-      helm_path: HelmCharts/backend-api/values-production.yaml
+      helm_path: helmCharts/backend-api/values-production.yaml
       image_name: ${{ needs.build.outputs.image_sha }}
       branch: main
       gitops_repo: BurakMikita/argocd-devops
