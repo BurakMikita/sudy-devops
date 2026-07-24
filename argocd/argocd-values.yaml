@@ -6,12 +6,14 @@ configs:
     url: https://argocd.mikita-burak.xyz
     accounts.github-actions: apiKey
     accounts.github-actions.enabled: "true"
-    accounts.github-actions.policies: "p, role:github-actions, applications, *,*, allow"
+    accounts.github-actions.policies: "p, github-actions, applications, *, *, allow"
     accounts.image-updater: apiKey
     helm.valuesFileSchemes: >-
       secrets+gpg-import, secrets+gpg-import-kubernetes, secrets+age-import,
       secrets+age-import-kubernetes, secrets, secrets+literal, https
- 
+  rbac:
+    policy.csv: |
+      p, github-actions, applications, *, *, allow
 controller:
   replicas: 1
   metrics:

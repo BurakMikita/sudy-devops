@@ -63,7 +63,7 @@ jobs:
           cd gitops-repo
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          BRANCH_NAME="update-image-${{ github.run_id }}"
+          BRANCH_NAME="update-image-${{ github.run_id }}-${{ github.run_attempt }}"
           git checkout -b "$BRANCH_NAME"
           git add "${{ inputs.helm_path }}"
           git commit -m "feat(${{ inputs.argocd_app_name }}): update image to ${{ inputs.image_name }}"
@@ -78,7 +78,7 @@ jobs:
             -d "{
               \"title\": \"[${{ inputs.argocd_app_name }}] Update image to ${{ inputs.image_name }}\",
               \"body\": \"Automated update of image tag.\",
-              \"head\": \"update-image-${{ github.run_id }}\",
+              \"head\": \"update-image-${{ github.run_id }}-${{ github.run_attempt }}\",
               \"base\": \"${{ inputs.branch }}\"
             }")
  
