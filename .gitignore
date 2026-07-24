@@ -42,3 +42,10 @@ talaka/secret.yaml
 
 # age encryption private key
 age-key.txt
+
+# ArgoCD deploy key
+argocd/argocd-deploy-key
+argocd/argocd-deploy-key.pub
+
+# Downloaded install packages
+*.deb

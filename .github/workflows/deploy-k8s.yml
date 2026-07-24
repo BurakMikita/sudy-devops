@@ -1,46 +1,32 @@
 name: Deploy k8s
- 
+
 on:
   push:
     branches: [main]
- 
+
 jobs:
   checks:
     uses: ./.github/workflows/pr-check.yml
- 
+
   build:
     needs: [checks]
     uses: ./.github/workflows/build-push.yml
     secrets: inherit
- 
+
   deploy:
     needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    uses: ./.github/workflows/deploy-argocd.yml
+    with:
+      helm_path: HelmCharts/backend-api/values-production.yaml
+      image_name: ${{ needs.build.outputs.image_sha }}
+      branch: main
+      gitops_repo: BurakMikita/argocd-devops.git
+      argocd_app_name: backend-api
+      argocd_server: ${{ vars.ARGOCD_SERVER }}
+    secrets:
+      gitops_token: ${{ secrets.GITOPS_TOKEN }}
+      argocd_auth_token: ${{ secrets.ARGOCD_AUTH_TOKEN }}
 
-      - name: Configure kubectl
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
-        run: |
-          mkdir -p ~/.kube
-          echo "$KUBE_CONFIG" | base64 -d > ~/.kube/config
-
-      - name: Install Helm
-        uses: azure/setup-helm@v4
-
-      - name: Deploy with Helm
-        env:
-          IMAGE: ${{ needs.build.outputs.image_sha }}
-        run: |
-          helm upgrade --install backend-api ./helm/backend-api \
-            --reuse-values \
-            --set image.repository="${IMAGE%:*}" \
-            --set image.tag="${IMAGE##*:}" \
-            --wait \
-            --timeout 4m
-          kubectl annotate deployment/backend-api kubernetes.io/change-cause="${{ github.sha }}" --overwrite
- 
   notify:
     name: Notify JOBs
     needs: [checks, deploy, build]
